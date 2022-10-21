@@ -1,0 +1,69 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  before_all do
+        @appId = "com.mfv.appTest"
+        @playStoreFile = "File Json"
+        @keystoreLocal = {
+          "android.injected.version.code" => "18",
+          "android.injected.version.name" => "1.0.1",
+          "android.injected.signing.store.file" => "File KeyStore",
+          "android.injected.signing.store.password" => "password",
+          "android.injected.signing.key.alias" => "upload",
+          "android.injected.signing.key.password" => "password",
+        }
+  end
+
+  desc "Build"
+    lane :build do
+      gradle(task: "clean assembleRelease", print_command: false, properties: @keystoreLocal)
+    end
+
+  desc "Build with Firebase App Distribution"
+    lane :distribute do
+      build
+      firebase_app_distribution(
+        app: "App ID Firebase",
+        groups: "tester",
+        release_notes: "Test release app 21/10",
+        firebase_cli_token: "Firebase CI Token",
+      )
+    end
+
+    desc "Build apk & bundle file"
+    lane :buildApkAndBundle do
+      gradle(task: "clean assembleRelease bundleRelease",
+             print_command: false,
+             properties: @keystoreLocal)
+    end
+     
+   desc "Deploy internal to the Google Play"
+  lane :internal do
+    buildApkAndBundle
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      track: "internal",
+      json_key: @playStoreFile,
+      package_name: @appId,
+      release_status: "draft",
+    )
+  end
+
+end
