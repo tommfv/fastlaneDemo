@@ -1,13 +1,14 @@
 # fastlaneDemo
 
-on file ./fastlane/Fastfile
+on run demo fastlane file ./fastlane/Fastfile
 
-1. run fastlane 'internal' need declare variable
+1. run fastlane 'internal' need declare variable </b>
 
-@playStoreFile = "File Json"
-"android.injected.signing.store.file" => "File KeyStore",
+@playStoreFile = "File Json" </b>
+"android.injected.signing.store.file" => "File KeyStore" </b>
 
+</b> 
+2. run fastlane 'distribute' need declare variable </b>
 
-2. run fastlane 'distribute' need declare variable
-app: "App ID Firebase",
-firebase_cli_token: "Firebase CI Token",
+app: "App ID Firebase" </b>
+firebase_cli_token: "Firebase CI Token" </b>
